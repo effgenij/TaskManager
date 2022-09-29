@@ -22,6 +22,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'simple_form'
 gem 'state_machines'
 gem 'state_machines-activerecord'
+gem 'slim-rails'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -43,7 +44,6 @@ group :development do
   # Can be configured to work on production as well see: https://github.com/MiniProfiler/rack-mini-profiler/blob/master/README.md
   gem 'rack-mini-profiler', '~> 2.0'
   gem 'listen', '~> 3.3'
-  gem 'ruby-lsp', '~> 0.1.0'
 end
 
 group :test do
