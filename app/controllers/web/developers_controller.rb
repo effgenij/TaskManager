@@ -4,7 +4,7 @@ class Web::DevelopersController < Web::ApplicationController
   end
 
   def create
-    @developer = Developer.new(developers_params)
+    @developer = Developer.new(developer_params)
 
     if @developer.save
       sign_in(@developer)
@@ -16,7 +16,7 @@ class Web::DevelopersController < Web::ApplicationController
 
   private
 
-  def developers_params
+  def developer_params
     params.require(:developer).permit(:first_name, :last_name, :email, :password, :password_confirmation)
   end
 end

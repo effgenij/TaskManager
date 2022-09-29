@@ -1,5 +1,6 @@
 h3 Sign up
--simple_form_for @developer do |f|
+
+= simple_form_for @developer do |f|
   p
     = f.input :first_name
     = f.input :last_name
@@ -7,4 +8,4 @@ h3 Sign up
     = f.input :password
     = f.input :password_confirmation
   p
-    = f.button :submit, 'Sigrn up'
+    = f.button :submit, 'Sign up'
