@@ -5,13 +5,13 @@ class Web::SessionsController < Web::ApplicationController
 
   def create
     @session = SessionForm.new(session_params)
-  end
 
-  if @session.valid?
-    sign_in @session.user
-    redirect_to :board
-  else
-    render :new
+    if @session.valid?
+      sign_in(@session.user)
+      redirect_to(:board)
+    else
+      render(:new)
+    end
   end
 
   def destroy
