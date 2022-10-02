@@ -9,6 +9,6 @@ FactoryBot.define do
     "description#{n}"
   end
   sequence :expired_at do
-    rand(1..30).days.after
+    rand(1..30).days.after.to_date
   end
 end
