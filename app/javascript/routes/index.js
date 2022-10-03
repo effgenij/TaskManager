@@ -1,3 +1,3 @@
-import routes from './ApiRoutes';
+import { apiV1TasksPath, apiV1TaskPath } from './ApiRoutes';
 
-export default routes;
+export { apiV1TasksPath, apiV1TaskPath };
