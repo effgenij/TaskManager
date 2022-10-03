@@ -10,3 +10,13 @@ admin.save
   u.password = "#{i}"
   u.save
 end
+
+10.times do |i|
+  t = Task.new
+  t.name = "Task_#{i}"
+  t.description = "Desc#{i}"
+  t.author_id = Manager.all.sample.id
+  t.assignee_id = Developer.all.sample.id
+  t.expired_at = (Time.now + 5.days).to_date
+  t.save
+end
