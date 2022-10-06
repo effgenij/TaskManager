@@ -11,7 +11,7 @@ admin.save
   u.save
 end
 
-10.times do |i|
+30.times do |i|
   t = Task.new
   t.name = "Task_#{i}"
   t.description = "Desc#{i}"
