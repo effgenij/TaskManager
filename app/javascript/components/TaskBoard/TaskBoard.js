@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import KanbanBoard from "@asseinfo/react-kanban";
-import '@asseinfo/react-kanban/dist/styles.css'
+import "@asseinfo/react-kanban/dist/styles.css";
 import { propOr } from "ramda";
 import { Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -9,8 +9,9 @@ import Task from "components/Task";
 import TasksRepository from "repositories/TasksRepository";
 import ColumnHeader from "components/ColumnHeader";
 import useStyles from "./useStyles";
-import AddPopup from "../AddPopup";
-import TaskForm from "../../forms/TaskForm";
+import AddPopup from "components/AddPopup";
+import EditPopup from "components/EditPopup";
+import TaskForm from "forms/TaskForm";
 
 const STATES = [
   { key: "new_task", value: "New" },
@@ -23,8 +24,9 @@ const STATES = [
 ];
 
 const MODES = {
-  ADD: 'add',
-  NONE: 'none',
+  ADD: "add",
+  NONE: "none",
+  EDIT: "edit",
 };
 
 const initialBoard = {
@@ -42,13 +44,20 @@ const TaskBoard = () => {
   const [board, setBoard] = useState(initialBoard);
   const [boardCards, setBoardCards] = useState([]);
   const [mode, setMode] = useState(MODES.NONE);
+  const [openedTaskId, setOpenedTaskId] = useState(null);
 
   const handleOpenAddPopup = () => {
     setMode(MODES.ADD);
   };
 
+  const handleOpenEditPopup = (task) => {
+    setOpenedTaskId(task.id);
+    setMode(MODES.EDIT);
+  };
+
   const handleClose = () => {
     setMode(MODES.NONE);
+    setOpenedTaskId(null);
   };
 
   useEffect(() => loadBoard(), []);
@@ -87,6 +96,26 @@ const TaskBoard = () => {
     });
   };
 
+  const loadTask = (id) => {
+    return TasksRepository.show(id).then(({ data: { task } }) => task);
+  };
+
+  const handleTaskUpdate = (task) => {
+    const attributes = TaskForm.attributesToSubmit(task);
+
+    return TasksRepository.update(task.id, attributes).then(() => {
+      loadColumnInitial(task.state);
+      handleClose();
+    });
+  };
+
+  const handleTaskDestroy = (task) => {
+    return TasksRepository.destroy(task.id).then(() => {
+      loadColumnInitial(task.state);
+      handleClose();
+    });
+  };
+
   const generateBoard = () => {
     const board = {
       columns: STATES.map(({ key, value }) => {
@@ -115,12 +144,16 @@ const TaskBoard = () => {
   };
 
   const handleCardDragEnd = (task, source, destination) => {
-    const transition = task.transitions.find(({ to }) => destination.toColumnId === to);
+    const transition = task.transitions.find(
+      ({ to }) => destination.toColumnId === to
+    );
     if (!transition) {
       return null;
     }
 
-    return TasksRepository.update(task.id, { task: { stateEvent: transition.event }})
+    return TasksRepository.update(task.id, {
+      task: { stateEvent: transition.event },
+    })
       .then(() => {
         loadColumnInitial(destination.toColumnId);
         loadColumnInitial(source.fromColumnId);
@@ -131,21 +164,31 @@ const TaskBoard = () => {
   };
 
   return (
-    <div>
+    <>
       <KanbanBoard
         renderColumnHeader={(column) => (
           <ColumnHeader column={column} onLoadMore={loadColumnMore} />
         )}
-        renderCard={(card) => <Task task={card} />}
+        renderCard={(card) => <Task onClick={handleOpenEditPopup} task={card} />}
         onCardDragEnd={handleCardDragEnd}
       >
         {board}
       </KanbanBoard>
-      <Fab className={styles.addButton} color="primary" aria-label="add" onClick={handleOpenAddPopup}>
+      <Fab
+        className={styles.addButton}
+        color="primary"
+        aria-label="add"
+        onClick={handleOpenAddPopup}
+      >
         <AddIcon />
       </Fab>
-      {mode === MODES.ADD && <AddPopup onCreateCard={handleTaskCreate} onClose={handleClose} />}
-    </div>
+      {mode === MODES.ADD && (
+        <AddPopup onCreateCard={handleTaskCreate} onClose={handleClose} />
+      )}
+      {mode === MODES.EDIT && (
+        <EditPopup onLoadCard={loadTask} onCardDestroy={handleTaskDestroy} onCardUpdate={handleTaskUpdate} onClose={handleClose} cardId={openedTaskId}/>
+      )}
+    </>
   );
 };
 
