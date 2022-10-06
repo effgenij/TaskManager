@@ -6,7 +6,7 @@ import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 
 import useStyles from './useStyles';
 
-const ColumnHeader = ({ column, onLoadMore }) => {
+function ColumnHeader({ column, onLoadMore }) {
   const styles = useStyles();
 
   const {
@@ -27,13 +27,15 @@ const ColumnHeader = ({ column, onLoadMore }) => {
         <b>{title}</b> ({count}/{totalCount || '…'})
       </div>
       <div className={styles.actions}>
-        { !allCardsLoaded && ( <IconButton aria-label="Load more" onClick={() => handleLoadMore()}>
-          <SystemUpdateAltIcon fontSize="small" />
-        </IconButton> )}
+        {!allCardsLoaded && (
+          <IconButton aria-label="Load more" onClick={() => handleLoadMore()}>
+            <SystemUpdateAltIcon fontSize="small" />
+          </IconButton>
+        )}
       </div>
     </div>
   );
-};
+}
 
 ColumnHeader.propTypes = {
   column: PropTypes.shape().isRequired,

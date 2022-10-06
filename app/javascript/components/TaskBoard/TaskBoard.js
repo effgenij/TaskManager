@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from "react";
-import KanbanBoard from "@asseinfo/react-kanban";
-import "@asseinfo/react-kanban/dist/styles.css";
-import { propOr } from "ramda";
-import { Fab } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import React, { useEffect, useState } from 'react';
+import KanbanBoard from '@asseinfo/react-kanban';
+import '@asseinfo/react-kanban/dist/styles.css';
+import { propOr } from 'ramda';
+import { Fab } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
-import Task from "components/Task";
-import TasksRepository from "repositories/TasksRepository";
-import ColumnHeader from "components/ColumnHeader";
-import useStyles from "./useStyles";
-import AddPopup from "components/AddPopup";
-import EditPopup from "components/EditPopup";
-import TaskForm from "forms/TaskForm";
+import Task from 'components/Task';
+import TasksRepository from 'repositories/TasksRepository';
+import ColumnHeader from 'components/ColumnHeader';
+import useStyles from './useStyles';
+import AddPopup from 'components/AddPopup';
+import EditPopup from 'components/EditPopup';
+import TaskForm from 'forms/TaskForm';
 
 const STATES = [
-  { key: "new_task", value: "New" },
-  { key: "in_development", value: "In Dev" },
-  { key: "in_qa", value: "In QA" },
-  { key: "in_code_review", value: "in CR" },
-  { key: "ready_for_release", value: "Ready for release" },
-  { key: "released", value: "Released" },
-  { key: "archived", value: "Archived" },
+  { key: 'new_task', value: 'New' },
+  { key: 'in_development', value: 'In Dev' },
+  { key: 'in_qa', value: 'In QA' },
+  { key: 'in_code_review', value: 'in CR' },
+  { key: 'ready_for_release', value: 'Ready for release' },
+  { key: 'released', value: 'Released' },
+  { key: 'archived', value: 'Archived' },
 ];
 
 const MODES = {
-  ADD: "add",
-  NONE: "none",
-  EDIT: "edit",
+  ADD: 'add',
+  NONE: 'none',
+  EDIT: 'edit',
 };
 
 const initialBoard = {
@@ -38,7 +38,7 @@ const initialBoard = {
   })),
 };
 
-const TaskBoard = () => {
+function TaskBoard() {
   const styles = useStyles();
 
   const [board, setBoard] = useState(initialBoard);
@@ -60,45 +60,35 @@ const TaskBoard = () => {
     setOpenedTaskId(null);
   };
 
-  useEffect(() => loadBoard(), []);
-  useEffect(() => generateBoard(), [boardCards]);
-
-  const loadColumn = (state, page, perPage) => {
-    return TasksRepository.index({
+  const loadColumn = (state, page, perPage) =>
+    TasksRepository.index({
       q: { stateEq: state },
       page,
       perPage,
     });
-  };
 
   const loadColumnInitial = (state, page = 1, perPage = 10) => {
     loadColumn(state, page, perPage).then(({ data }) => {
-      setBoardCards((prevState) => {
-        return {
-          ...prevState,
-          [state]: { cards: data.items, meta: data.meta },
-        };
-      });
+      setBoardCards((prevState) => ({
+        ...prevState,
+        [state]: { cards: data.items, meta: data.meta },
+      }));
     });
   };
 
   const loadColumnMore = (state, page = 1, perPage = 10) => {
     loadColumn(state, page, perPage).then(({ data }) => {
-      setBoardCards((prevState) => {
-        return {
-          ...prevState,
-          [state]: {
-            cards: prevState[state].cards.concat(data.items),
-            meta: data.meta,
-          },
-        };
-      });
+      setBoardCards((prevState) => ({
+        ...prevState,
+        [state]: {
+          cards: prevState[state].cards.concat(data.items),
+          meta: data.meta,
+        },
+      }));
     });
   };
 
-  const loadTask = (id) => {
-    return TasksRepository.show(id).then(({ data: { task } }) => task);
-  };
+  const loadTask = (id) => TasksRepository.show(id).then(({ data: { task } }) => task);
 
   const handleTaskUpdate = (task) => {
     const attributes = TaskForm.attributesToSubmit(task);
@@ -109,23 +99,20 @@ const TaskBoard = () => {
     });
   };
 
-  const handleTaskDestroy = (task) => {
-    return TasksRepository.destroy(task.id).then(() => {
+  const handleTaskDestroy = (task) =>
+    TasksRepository.destroy(task.id).then(() => {
       loadColumnInitial(task.state);
       handleClose();
     });
-  };
 
   const generateBoard = () => {
     const board = {
-      columns: STATES.map(({ key, value }) => {
-        return {
-          id: key,
-          title: value,
-          cards: propOr({}, "cards", boardCards[key]),
-          meta: propOr({}, "meta", boardCards[key]),
-        };
-      }),
+      columns: STATES.map(({ key, value }) => ({
+        id: key,
+        title: value,
+        cards: propOr({}, 'cards', boardCards[key]),
+        meta: propOr({}, 'meta', boardCards[key]),
+      })),
     };
 
     setBoard(board);
@@ -143,10 +130,11 @@ const TaskBoard = () => {
     STATES.map(({ key }) => loadColumnInitial(key));
   };
 
+  useEffect(() => loadBoard(), []);
+  useEffect(() => generateBoard(), [boardCards]);
+
   const handleCardDragEnd = (task, source, destination) => {
-    const transition = task.transitions.find(
-      ({ to }) => destination.toColumnId === to
-    );
+    const transition = task.transitions.find(({ to }) => destination.toColumnId === to);
     if (!transition) {
       return null;
     }
@@ -166,30 +154,27 @@ const TaskBoard = () => {
   return (
     <>
       <KanbanBoard
-        renderColumnHeader={(column) => (
-          <ColumnHeader column={column} onLoadMore={loadColumnMore} />
-        )}
+        renderColumnHeader={(column) => <ColumnHeader column={column} onLoadMore={loadColumnMore} />}
         renderCard={(card) => <Task onClick={handleOpenEditPopup} task={card} />}
         onCardDragEnd={handleCardDragEnd}
       >
         {board}
       </KanbanBoard>
-      <Fab
-        className={styles.addButton}
-        color="primary"
-        aria-label="add"
-        onClick={handleOpenAddPopup}
-      >
+      <Fab className={styles.addButton} color="primary" aria-label="add" onClick={handleOpenAddPopup}>
         <AddIcon />
       </Fab>
-      {mode === MODES.ADD && (
-        <AddPopup onCreateCard={handleTaskCreate} onClose={handleClose} />
-      )}
+      {mode === MODES.ADD && <AddPopup onCreateCard={handleTaskCreate} onClose={handleClose} />}
       {mode === MODES.EDIT && (
-        <EditPopup onLoadCard={loadTask} onCardDestroy={handleTaskDestroy} onCardUpdate={handleTaskUpdate} onClose={handleClose} cardId={openedTaskId}/>
+        <EditPopup
+          onLoadCard={loadTask}
+          onCardDestroy={handleTaskDestroy}
+          onCardUpdate={handleTaskUpdate}
+          onClose={handleClose}
+          cardId={openedTaskId}
+        />
       )}
     </>
   );
-};
+}
 
 export default TaskBoard;
