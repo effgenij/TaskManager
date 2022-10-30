@@ -13,7 +13,7 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 
 import TaskForm from 'forms/TaskForm';
-import TaskPresenter from 'presenters/TaskPresenter'
+import TaskPresenter from 'presenters/TaskPresenter';
 
 import useStyles from './useStyles';
 
