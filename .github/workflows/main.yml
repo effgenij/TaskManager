@@ -1,13 +1,14 @@
 name: Main
 
 on:
-  pull_request:
-    branches:
-      - 'develop'
   push:
     branches:
       - 'develop'
       - 'feat/**'
+  pull_request:
+    branches:
+      - 'develop'
+
 
 jobs:
   build:
