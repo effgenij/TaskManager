@@ -21,14 +21,14 @@ gem 'state_machines-activerecord'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'webpacker', '~> 5.0'
 gem 'webpacker-react'
-gem 'coveralls_reborn', '~> 0.25.0', require: false
-gem 'simplecov', require: false
-gem 'simplecov-lcov', '~> 0.8.0'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails'
   gem 'rubocop'
+  gem 'coveralls_reborn', '~> 0.25.0', require: false
+  gem 'simplecov', require: false
+  gem 'simplecov-lcov', '~> 0.8.0'
 end
 
 group :development do
