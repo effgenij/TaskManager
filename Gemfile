@@ -21,7 +21,9 @@ gem 'state_machines-activerecord'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'webpacker', '~> 5.0'
 gem 'webpacker-react'
-gem 'coveralls', require: false
+gem 'coveralls_reborn', '~> 0.25.0', require: false
+gem 'simplecov', require: false
+gem 'simplecov-lcov', '~> 0.8.0'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -39,5 +41,4 @@ group :test do
   gem 'capybara', '>= 3.26'
   gem 'selenium-webdriver'
   gem 'webdrivers'
-  gem 'simplecov', require: false
 end
