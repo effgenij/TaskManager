@@ -28,7 +28,7 @@ group :development, :test do
   gem 'rubocop'
   gem 'coveralls_reborn', '~> 0.25.0', require: false
   gem 'simplecov', require: false
-  gem 'simplecov-lcov', '~> 0.8.0'
+  gem 'simplecov-lcov', '~> 0.8.0', require: false
 end
 
 group :development do
