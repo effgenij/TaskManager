@@ -1,7 +1,5 @@
 databases:
   - name: task-manager-db
-    databaseName: task-manager-db
-    user: task-manager-db
 
 services:
   - type: web
