@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { changeColumn } from '@asseinfo/react-kanban';
 
 import TasksRepository from 'repositories/TasksRepository';
+import TaskForm from 'forms/TaskForm';
 import { STATES } from 'presenters/TaskPresenter';
 
 const initialState = {
@@ -86,8 +87,8 @@ export const useTasksActions = () => {
       task: { stateEvent: transition.event },
     })
       .then(() => {
-        loadColumnInitial(destination.toColumnId);
-        loadColumnInitial(source.fromColumnId);
+        loadColumn(destination.toColumnId);
+        loadColumn(source.fromColumnId);
       })
       .catch((error) => {
         alert(`Move failed! ${error.message}`);
@@ -97,7 +98,7 @@ export const useTasksActions = () => {
   const taskCreate = (params) => {
     const attributes = TaskForm.attributesToSubmit(params);
     return TasksRepository.create(attributes).then(({ data: { task } }) => {
-      loadColumnInitial(task.state);
+      loadColumn(task.state);
     });
   };
 
@@ -107,14 +108,14 @@ export const useTasksActions = () => {
     const attributes = TaskForm.attributesToSubmit(task);
 
     return TasksRepository.update(task.id, attributes).then(() => {
-      loadColumnInitial(task.state);
+      loadColumn(task.state);
       handleClose();
     });
   };
 
   const taskDestroy = (task) =>
     TasksRepository.destroy(task.id).then(() => {
-      loadColumnInitial(task.state);
+      loadColumn(task.state);
       handleClose();
     });
 
