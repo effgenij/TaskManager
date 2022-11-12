@@ -59,7 +59,7 @@ const TaskBoard = () => {
   };
 
   const handleTaskCreate = (params) => {
-    taskCreate(params)
+    taskCreate(params);
     handleClose();
   };
 
